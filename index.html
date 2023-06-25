@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/StephanWagner/jBox@v1.3.3/dist/jBox.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/StephanWagner/jBox@v1.3.3/dist/jBox.all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jBox/1.3.3/jBox.min.js" integrity="sha512-XzceybCZuZTsEMbV/C1DbKSHwmO/iQ7qC7RHVs2ZPWMAQeoL8KGwBWptO4bemVpNPP8hI5w+oB+8xTyqq9o5aw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/picocss/1.5.10/pico.min.css" integrity="sha512-R4D8tIuJws1QxZAVEpeFxtKEw4iab4HuyVzofpiO19VmlBhXW5qdTCmD/+yYQ+nviYUgS2EywDnoNTaj+lpUfA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <script>
+
+        var firebaseConfig = {
+          apiKey: "AIzaSyBvH-Dho2ROXkePATKnJN6IJzUP_gV8Tc4",
+          authDomain: "teachable-ai.firebaseapp.com",
+          projectId: "teachable-ai",
+          storageBucket: "teachable-ai.appspot.com",
+          messagingSenderId: "12644078768",
+          appId: "1:12644078768:web:8f0cab315d418c20121775",
+          measurementId: "G-JWVXYEEMF7"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        
+        const db = firebase.firestore();
+        let results = [];
+
+        db.collection('commands').get().then((result)=>{
+           const db = firebase.firestore();
+           result.forEach((result)=>{
+            results = results + result.id + " ";
+            // console.log(results);
+            // console.log(results.data());
+            const p = document.createElement('p');
+            const date = new Date();
+            const TIME_ZONE = 9 * 60 * 60 * 1000;
+            p.innerHTML = "[" + new Date(date.getTime() + TIME_ZONE).toISOString().replace('T', ' ').slice(0, -5) + "] {system} : " + "I'm Ready to use!";
+            output.appendChild(p);
+            
+        })}).catch((error) => {
+          const p = document.createElement('p');
+          const date = new Date();
+          const TIME_ZONE = 9 * 60 * 60 * 1000;
+          p.innerHTML = "[" + new Date(date.getTime() + TIME_ZONE).toISOString().replace('T', ' ').slice(0, -5) + "] {system} : " + "Error caused while importing data from firestore db.";
+          output.appendChild(p);
+          console.warn(error)
+          console.warn("Failed to get data");
+        });
+        
+    </script>
+</head>
+<body>
+<!-- 기본 ui -->
+    <h2>AI flow</h2>
+    <p></p>
+    <input type="text" name="talk" id="talk">
+    <button id="btn">Talk</button>
+    <hr>
+    <div id="output">
+        <p>Starting...</p>
+        
+    </div>
+    <style>
+        #output{
+            width: 100%;
+            height: fit-content;
+            background-color: #ccc;
+            border: 1px solid #000;
+        };
+            
+    </style>
+
+
+    <!-- 기존 음성인식 html / js 코드 -->
+
+    <div id="result"></div>
+        <script>
+            var recognition = new webkitSpeechRecognition();
+            userasking();
+function demoNoticeDefault() {
+        // 사용자가 "친구야" 라고 말할때까지 계속 음성인식 활성화
+        // recognition.lang = "ko-KR";
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.start();
+
+        // 음성인식 결과가 나올때마다 호출되는 콜백함수
+        recognition.onresult = function(event) {
+            var interim_transcript = '';
+            var final_transcript = '';
+            for (var i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    final_transcript += event.results[i][0].transcript;
+                } else {
+                    interim_transcript += event.results[i][0].transcript;
+                }
+            }
+            // 음성인식 결과가 나올때마다 화면에 출력
+            document.getElementById('result').innerHTML = final_transcript + interim_transcript;
+            console.log(final_transcript)
+            if (final_transcript == "친구야." || final_transcript == "친구야" || final_transcript == "친구야." || final_transcript == "친구의." || final_transcript == "친구야?" || final_transcript == "친구예요."){
+                recognition.stop();
+                new jBox('Notice', {
+    content: '안녕하세요. 무엇을 도와드릴까요?',
+    color: 'black'
+  });
+
+sendmsg("hello")
+
+                const message = new SpeechSynthesisUtterance('안녕하세요. 무엇을 도와드릴까요?');
+window.speechSynthesis.speak(message);
+
+userasking();
+
+            }
+        };
+}
+
+function userasking(){
+            var recognition = new webkitSpeechRecognition();
+
+        recognition.continuous = true;
+        recognition.interimResults = true;
+            recognition.start();
+
+
+        // 음성인식 결과가 나올때마다 호출되는 콜백함수
+        recognition.onresult = function(event) {
+            var interim_transcript = '';
+            var final_transcript = '';
+            for (var i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    final_transcript += event.results[i][0].transcript;
+                } else {
+                    interim_transcript += event.results[i][0].transcript;
+                }
+            }
+            // 음성인식 결과가 나올때마다 화면에 출력
+            document.getElementById('result').innerHTML = final_transcript + interim_transcript;
+            console.log(final_transcript)
+            if (final_transcript == "" || final_transcript == "새 탭 열어줘." || final_transcript == "새로운 탭." || final_transcript == "새로운 탭 열어줘." || final_transcript == "새로운 탭 열어주셔요." || final_transcript == "새 탭 열어." || final_transcript == "새 탭을 열어줘."){
+                recognition.stop();
+                new jBox('Notice', {
+    content: '새 탭을 열었어요.',
+    color: 'black'
+  });
+    window.open('https://google.com', '_blank');
+    
+                const message = new SpeechSynthesisUtterance('새 탭을 열었습니다.');
+window.speechSynthesis.speak(message);
+userasking();}
+        };
+
+        // 만약 음성인식이 자동으로 꺼지면, 다시 음성인식 활성화
+        recognition.onend = function() {
+            userasking();
+        };
+        }
+        
+        recognition.onend = function() {
+            demoNoticeDefault();
+        };
+    </script>
+
+
+
+
+    <!-- 기존 AI 코드 -->
+    
+
+    <script>
+        const output = document.getElementById('output');
+        const talk = document.getElementById('talk');
+        const btn = document.getElementById('btn');
+
+        btn.addEventListener('click', function(){
+            // output.innerHTML = talk.value;
+            // add a p in output div with talk.value
+            const p = document.createElement('p');
+            const date = new Date();
+            const TIME_ZONE = 9 * 60 * 60 * 1000;
+            p.innerHTML = "[" + new Date(date.getTime() + TIME_ZONE).toISOString().replace('T', ' ').slice(0, -5) + "] {user} : " + talk.value;
+            output.appendChild(p);
+            // check if the command exsists
+            aicheck(talk.value);
+            // clear input
+            talk.value = '';
+        })
+
+        // when user press enter key in input field, click the button
+        talk.addEventListener('keydown', function(e){
+            if(e.keyCode === 13){
+
+                if(talk.value == ''){
+                    alert('Please enter something');
+                }else{
+                    btn.click();
+                }
+
+                //btn.click();
+            }
+        })
+
+
+
+    </script>
+
+<!-- AI area -->
+    <script>
+        // let answer;
+        function sendmsg_machine(message){
+            let answer = message
+            const machine = document.createElement('p');
+            const date = new Date();
+            const TIME_ZONE = 9 * 60 * 60 * 1000;
+            machine.innerHTML = "[" + new Date(date.getTime() + TIME_ZONE).toISOString().replace('T', ' ').slice(0, -5) + "] {machine} : " + answer;
+            output.appendChild(machine);
+        }
+
+        function aicheck(cmd){
+            // console.log(results.data().answer);
+            let input = cmd;
+            console.log(input)
+            if (input == results.indexOf(input)){
+                console.log("correct")
+            }
+
+
+
+
+            // sendmsg_machine();
+            
+        }
+    </script>
+
+</body>
+</html>
