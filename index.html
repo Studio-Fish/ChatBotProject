@@ -32,7 +32,7 @@
         db.collection('commands').get().then((result)=>{
            const db = firebase.firestore();
            result.forEach((result)=>{
-            results = results + result.id + " ";
+            results = results + result.id + ",";
             // console.log(results);
             // console.log(results.data());
             const p = document.createElement('p');
@@ -195,7 +195,7 @@ userasking();}
         talk.addEventListener('keydown', function(e){
             if(e.keyCode === 13){
 
-                if(talk.value == ''){
+                if(talk.value == '' || talk.value == ' '){
                     alert('Please enter something');
                 }else{
                     btn.click();
@@ -224,6 +224,7 @@ userasking();}
         function aicheck(cmd){
             // console.log(results.data().answer);
             let input = cmd;
+            sendmsg_machine(results.includes(input))
             console.log(input)
             if (input == results.indexOf(input)){
                 console.log("correct")
@@ -232,7 +233,7 @@ userasking();}
 
 
 
-            // sendmsg_machine();
+            // sendmsg_machine()
             
         }
     </script>
